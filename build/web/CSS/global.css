@@ -1,0 +1,80 @@
+:root {
+    --red: #e52e4d;
+    --green: #33cc95;
+    --blue: #5429cc;
+
+    --blue-light: #6933ff;
+
+    --background: #1e111d;
+    --background-light: #271625;
+    
+    --footer-background: #808080;
+    
+    --text-body: #ffffff;
+
+    --input-background: #e7e9ee;
+    --input-border-color: #d7d7d7;
+}
+
+* {
+    box-sizing: border-box;
+
+    padding: 0;
+    margin: 0;
+    
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+html {
+    @media only screen and (max-width: 1080px) {
+        font-size: 93.75%;
+    }
+
+    @media only screen and (max-width: 720px) {
+        font-size: 87.5%;
+    }
+}
+
+body {
+    background-color: var(--background);
+    -webkit-font-smoothing: antialiased;
+    
+    color: var(--text-body);
+    
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+a {
+    color: var(--text-body);
+}
+
+body, input, textarea, button {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+}
+
+h1, h2, h3, h4, h5, h6, strong {
+    font-weight: 600;
+}
+
+button {
+    cursor: pointer;
+}
+
+[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+input[type="number"]::-webkit-inner-spin-button { 
+    -webkit-appearance: none;
+    
+}
+input[type="number"] { 
+   -moz-appearance: textfield;
+   appearance: textfield;
+}

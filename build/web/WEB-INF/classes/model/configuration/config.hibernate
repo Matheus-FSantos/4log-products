@@ -1,0 +1,1 @@
+JDBC Connection String: jdbc:mysql://localhost:3306/4Log?useTimezone=true&serverTimezone=UTC&useUnicode=yes&characterEncoding=UTF-8
