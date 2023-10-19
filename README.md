@@ -256,6 +256,7 @@ public class ProductController extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("UTF-8");
     }
 
     @Override
@@ -373,7 +374,11 @@ e clique em *Finish*, já é para aparecer a classe ProductList lá certinho.
 
 Precisamos de uma classe que irá fornecer a conexão com o banco de dados, para isso, em **src**, crie uma **Java Class** dentro de **src** no pacote **model/config** e de o nome de **Connection**
 
-cole o seguinte código dentro dela:
+Primeiro vá a pasta **Configuration Files > persistense.xml** e copie o valor do campo **Persistence Unite Name**:
+
+![Alt text](image-36.png)
+
+vá para a classe Connection e cole o seguinte código dentro dela:
 
 ~~~ java
 package model.config;
@@ -387,7 +392,7 @@ public class Connection {
     private final EntityManagerFactory entityManagerFactory;
     
     public Connection() {
-        this.entityManagerFactory = Persistence.createEntityManagerFactory("websitePU");
+        this.entityManagerFactory = Persistence.createEntityManagerFactory("WebApplication1PU"); /* Dado vindo do persistence.xml */
         this.entityManager = entityManagerFactory.createEntityManager();
     }
     
@@ -439,3 +444,174 @@ public class ProductRepository {
 ~~~
 
 Lembre-se: caso não esteja usando o mesmo banco de dados, troque tudo para a sua realidade
+
+### 🖊️ - Métodos da Service
+
+Como já temos os métodos da Service implementados, podemos implementar também os métodos da service, no caso, o método findAll e o método save, implemente da seguinte maneira:
+
+~~~ java
+package model.service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
+import model.domain.Product;
+import model.repository.ProductRepository;
+
+public class ProductService {
+
+    private final ProductRepository productRepository;
+    
+    public ProductService() {
+        this.productRepository = new ProductRepository();
+    }
+    
+    public List<Product> findAll() {
+        return this.productRepository.findAll();
+    }
+    
+    public void save(HttpServletRequest request) throws Exception {
+        String productName = request.getParameter("name-input"); /* pega o valor que está contido dentro do input do tipo name e guarda na var */
+        String productBrand = request.getParameter("brand-input");
+        Double productPrice = Double.valueOf(request.getParameter("price-input"));
+        
+        Product newProduct = new Product(UUID.randomUUID().toString(), productName, productBrand, productPrice, new Date()); /* instancia um produto novo de acordo com os dados que vier dos inputs */
+        
+        this.productRepository.save(newProduct); /* salva os dados */
+    }
+
+}
+~~~
+
+### 🖊️ - Métodos da Controller
+
+Já temos todos os métodos necessários para implementar a controller, com isso, podemos implementar o doGet e o doPost:
+
+~~~ java
+@Override
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    processRequest(request, response);
+    List<Product> productList = new ArrayList<>();
+    
+    try {
+        productList = this.productService.findAll();
+        request.setAttribute("products", productList);
+        request.getRequestDispatcher("").forward(request, response);
+    } catch (Exception e) {
+        System.out.println(e.getMessage());
+    }
+}
+@Override
+protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    processRequest(request, response);
+    
+    try {
+        this.productService.save(request);
+        this.productService.findAll();
+    } catch (Exception e) {
+        System.out.println(e.getMessage());
+    }
+    
+    response.sendRedirect("/WebApplication1/products"); /* Troque WebApplication1 pela url padrão do seu sistema, essa linha força uma renderização do banco de dados inteiro */
+}
+~~~
+
+### 🖥️ - Front-End
+
+Agora, para finalizar, so precisamos adicionar o código necessário para receber os dados que queremos cadastrar em um formulário e listar os dados em uma tabela, basicamente, o código do **index.jsp** fica assim:
+
+~~~ html
+<%@page import="model.domain.Product"%>
+<%@page import="java.util.List"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>JSP Page</title>
+    </head>
+    <body>
+        <h1>Product List</h1>
+        
+        
+        <!-- Formulário de cadastro de produto -->
+        <form name="save-a-product" method="POST" action="/WebApplication1/products"> <!-- troque WebApplication1 pela URL padrão do seu app -->
+            <label for="name-input">Name</label>
+            <input id="name-input" name="name-input" placeholder="Insert a product name" minlength="1" minlength="50" required="true"/>
+            <br/>
+            
+            <label for="brand-input">Brand</label>
+            <input id="brand-input" name="brand-input" placeholder="Insert a product brand" minlength="1" minlength="50" required="true"/>
+            <br/>
+            
+            <label for="price-input">Price</label>
+            <input type="number" min="1" step="any" id="price-input" name="price-input" placeholder="Insert a product price" required="true"/>
+            <br/>
+            
+            <input type="submit" value="Submit" />
+        </form>
+        
+        <!-- Tabela de listagem de produtos - Renderização Condicional -->
+        <%
+            List<Product> productList = (List<Product>) request.getAttribute("products");
+            
+            if(productList == null) {
+        %>
+                <p>Fill table to see all products.</p>
+                <form name="find-all" action="/WebApplication1/products"> <!-- troque WebApplication1 pela URL padrão do seu app -->
+                    <input type="submit" value="Fill table" />
+                </form>
+        <%
+            } else {
+        %>
+                <form name="find-all" method="GET" action="/WebApplication1/products"> <!-- troque WebApplication1 pela URL padrão do seu app -->
+                    <input type="submit" value="Update table" />
+                </form>
+                <table border="1">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Brand</th>
+                        <th>Price</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+        <%  
+                for(Product product : productList) {  
+        %>
+                    <tr>
+                        <td><%= product.getLgName() %></td>
+                        <td><%= product.getLgBrand() %></td>
+                        <td>$ <%= product.getLgPrice() %></td>
+                        <td><%= product.getLgcreatedAt() %></td>
+                    </tr>
+        <%    
+                }
+        %>
+                    </tbody>
+                </table>
+        <%
+            }
+        %>
+    </body>
+</html>
+~~~
+
+Ao testar no front-end, se fizer tudo corretamente, deverá aparecer algo tipo assim:
+
+![Alt text](image-37.png)
+
+ao clicar no botão **Fill Table** a tabela deverá aparecer, da seguinte maneira:
+
+![Alt text](image-38.png)
+
+caso queira cadastrar um produto, preencha os campos Name, Brand e Price e clique em submit, ele já deverá aparecer na tabela, da seguinte maneira:
+
+![Alt text](image-41.png)
+![Alt text](image-42.png)
+
+### 🛣️ - Fim da linha
+
+Bom, com isso, espero ter ajudado vocês a criarem o seu primeiro "CRUD" com Java e que vocês consigam, com esse ""tutorial"", dar o pontapé inicial na sua carreira como programador Web, lembre-se que com esse ""tutorial"" você obtem boas bases para conseguir construir QUALQUER aplicação com QUALQUER linguagem, afinal, tudo se resume a IFs e ELSEs kkkkkkkkkkk. Até mais, flwsss!!! 
