@@ -1,0 +1,18 @@
+CREATE DATABASE 4Log;
+
+USE 4Log;
+
+CREATE TABLE product(
+    lg_code VARCHAR(36) PRIMARY KEY,
+    lg_name VARCHAR(50) NOT NULL,
+    lg_brand VARCHAR(50) NOT NULL,
+    lg_price DOUBLE NOT NULL,
+    lg_createdAt DATETIME NOT NULL
+);
+
+ALTER TABLE 4Log.product CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+SELECT * FROM 4Log.product;
+
+INSERT INTO 4Log.product (4Log.product.lg_code, 4Log.product.lg_name, 4Log.product.lg_brand, 4Log.product.lg_price, 4Log.product.lg_createdAt) VALUES (UUID(), "Televisão", "Toshiba", 2000.00, NOW());
+INSERT INTO 4Log.product (4Log.product.lg_code, 4Log.product.lg_name, 4Log.product.lg_brand, 4Log.product.lg_price, 4Log.product.lg_createdAt) VALUES (UUID(), "LG Smart TV 50' OLED 4k", "LG", 3875.00, NOW());
