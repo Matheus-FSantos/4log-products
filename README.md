@@ -423,8 +423,8 @@ public class ProductRepository {
     }
     
     public List<Product> findAll() {
-        String JPQLQuery = "SELECT p FROM Product p"; 
-        TypedQuery<Product> query = this.connection.getConnection().createQuery(JPQLQuery, Product.class);
+        String JPQLQuery = "SELECT p FROM Product p"; /* Esse comando é uma query JPQL logo esse Product está se referindo a CLASSE Product e não para a tabela product, se fosse para a tabela product, o Product seria em minusculo e não em maiusculo */ 
+        TypedQuery<Product> query = this.connection.getConnection().createQuery(JPQLQuery, Product.class); /* Troque Product.class  pela sua classe.class */
         return query.getResultList();
     
     }
@@ -436,5 +436,6 @@ public class ProductRepository {
     }
     
 }
-
 ~~~
+
+Lembre-se: caso não esteja usando o mesmo banco de dados, troque tudo para a sua realidade
