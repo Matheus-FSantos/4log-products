@@ -1,0 +1,164 @@
+.container {
+    padding-top: 40px;
+
+    width: 90%;
+    height: 800px;
+    margin: 0 auto;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    font-weight: 600;
+    padding: 20px;
+
+    background-color: var(--footer-background);
+}
+
+.container main {
+    display: flex;
+    align-items: center;
+    
+    gap: 20%;
+    
+    height: 95%;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 20px;
+
+    width: 400px;
+}
+
+.container h1 {
+    font-weight: 900;
+    cursor: pointer;
+    text-decoration: underline;
+
+    padding-left: 40px;
+}
+
+form div {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+
+    width: 100%;
+}
+
+form div label {
+    font-size: 18px;
+    font-weight: 600;
+
+    position: relative;
+    left: 7px;
+}
+
+form input[type="submit"], form button {
+    width: 100%;
+    height: 40px;
+
+    cursor: pointer;
+
+    font-size: 18px;
+    font-weight: bolder;
+
+    border: 2px solid var(--blue);
+    border-radius: 40px;
+
+    background-color: transparent;
+    color: var(--blue);
+}
+
+form div input {
+    width: 100%;
+    height: 40px;
+
+    padding: 5px 8px;
+
+    font-size: 16px;
+    font-weight: bolder;
+
+    border: 1px solid var(--text-body);
+    border-radius: 10px;
+
+    background-color: transparent;
+    color: var(--text-body);
+}
+
+form div input:focus {
+    outline: 0
+}
+
+form input[type="submit"]:hover, form button:hover {
+    transform: scale(1.06);
+    background-color: var(--blue);
+    color: var(--text-body);
+}
+
+form input[type="submit"]:active, form button:active {
+    transform: scale(1);
+}
+
+
+
+/* TABLE */
+
+#findAllTB {
+    padding-top: 20px;
+    max-width: 760px;
+    width: 100%;
+    height: 400px;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    
+    overflow: auto;
+}
+
+#findAllTB button {
+    max-width: 200px;
+    width: 100%;
+    
+    position: relative;
+    left: 10px;
+    
+    border-color: var(--green);
+    color: var(--green);
+    
+    white-space: nowrap;
+}
+
+#findAllTB button:hover {
+    background-color: var(--green);
+    color: var(--text-body);
+}
+
+table {
+    width: 750px;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+    
+    white-space: nowrap; /* Remove a quebra de linha */
+}
+
+th {
+    background-color: var(--background-light);
+}
